@@ -7,6 +7,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 import pandas as pd
+from tqdm.auto import tqdm
 
 from .base import PoseEstimator
 
@@ -129,7 +130,12 @@ def run_pose_estimation(
         raise ValueError("The pose estimator must provide keypoint_names.")
 
     results = []
-    for _, row in rows.iterrows():
+    for _, row in tqdm(
+        rows.iterrows(),
+        total=len(rows),
+        desc="Extracting poses",
+        unit="video",
+    ):
         video_path, relative_video_path = _resolve_video_path(row["video_path"], root)
         if not video_path.is_file():
             raise FileNotFoundError(f"Video does not exist: {video_path}")

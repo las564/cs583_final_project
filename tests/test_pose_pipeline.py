@@ -98,6 +98,11 @@ class PosePipelineTests(unittest.TestCase):
                 patch.object(
                     pipeline_module.cv2, "VideoCapture", return_value=capture
                 ),
+                patch.object(
+                    pipeline_module,
+                    "tqdm",
+                    side_effect=lambda iterable, **kwargs: iterable,
+                ) as progress,
                 patch("pose_pipeline.visualize.render_pose_video") as render,
             ):
                 result = run_pose_estimation(
@@ -107,6 +112,15 @@ class PosePipelineTests(unittest.TestCase):
                     output_dir=output_dir,
                     visualization_dir=root / "visualizations",
                 )
+            progress.assert_called_once()
+            self.assertEqual(
+                progress.call_args.kwargs,
+                {
+                    "total": 1,
+                    "desc": "Extracting poses",
+                    "unit": "video",
+                },
+            )
             render.assert_called_once_with(
                 video_path.resolve(),
                 output_dir / "squat/good/front/subject_001.npz",

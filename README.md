@@ -76,7 +76,8 @@ local weights path to use an existing model.
 
 Use `--backend mediapipe` to swap estimators. Pose sequences are saved as
 compressed NPZ files under `data/processed/poses/<backend>/`, and a
-`pose_index.csv` manifest records each artifact path and video metadata. Each
+`pose_index.csv` manifest records each artifact path and video metadata. The
+pipeline displays a progress bar as each video is processed. Each
 NPZ contains `keypoints` with shape `(frames, keypoints, 4)` in `x, y, z,
 confidence` order, plus frame indices, timestamps, and keypoint names. `x` and
 `y` are normalized to image dimensions; depth and confidence use each backend's
